@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | Smart Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="panel auth-panel">
+      <div class="auth-panel-header">
+        <svg class="auth-small-logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="55" fill="url(#authLogoBg)" opacity="0.15" />
+          <g transform="translate(60, 60)">
+            <circle cx="0" cy="0" r="35" fill="none" stroke="url(#authLogoGradient)" stroke-width="3" />
+            <path d="M -12 0 L -2 10 L 15 -8" stroke="url(#authLogoGradient)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          <defs>
+            <linearGradient id="authLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#1f78ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#1faf7b;stop-opacity:1" />
+            </linearGradient>
+            <radialGradient id="authLogoBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" style="stop-color:#1f78ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#1faf7b;stop-opacity:1" />
+            </radialGradient>
+          </defs>
+        </svg>
+        <div>
+          <h1 class="auth-app-title">Smart Task Manager</h1>
+          <h2>Welcome Back</h2>
+        </div>
+      </div>
+      <p class="hint">Login to access your dashboard.</p>
+
+      <form id="loginForm" class="form-grid-wide">
+        <label>Email
+          <input id="loginEmail" type="email" required placeholder="you@example.com" />
+        </label>
+        <label>Password
+          <input id="loginPassword" type="password" required minlength="6" placeholder="Enter password" />
+        </label>
+        <p class="hint hidden" id="loginFeedback"></p>
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+
+      <p class="hint">No account? <a href="register.html">Create one</a></p>
+    </section>
+  </main>
+
+  <script src="auth.js"></script>
+</body>
+</html>

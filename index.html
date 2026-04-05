@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <main class="layout">
+    <aside class="sidebar panel">
+      <div class="brand-block">
+        <svg class="brand-logo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background circle -->
+          <circle cx="60" cy="60" r="55" fill="url(#logoBg)" opacity="0.15" />
+          
+          <!-- Checkmark icon -->
+          <g transform="translate(60, 60)">
+            <!-- Main circle -->
+            <circle cx="0" cy="0" r="35" fill="none" stroke="url(#logoGradient)" stroke-width="3" />
+            
+            <!-- Checkmark -->
+            <path d="M -12 0 L -2 10 L 15 -8" stroke="url(#logoGradient)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+          
+          <!-- Gradients -->
+          <defs>
+            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#1f78ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#1faf7b;stop-opacity:1" />
+            </linearGradient>
+            <radialGradient id="logoBg" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" style="stop-color:#1f78ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#1faf7b;stop-opacity:1" />
+            </radialGradient>
+          </defs>
+        </svg>
+        <p class="brand-title">Smart Task Manager</p>
+        <p class="brand-subtitle">Plan smarter. Execute faster.</p>
+      </div>
+
+      <nav class="nav" id="mainNav">
+        <button class="nav-btn active" data-view="dashboard" type="button">Dashboard</button>
+        <button class="nav-btn" data-view="tasks" type="button">Task List</button>
+        <button class="nav-btn" data-view="add" type="button">Add Task</button>
+        <button class="nav-btn" data-view="calendar" type="button">Calendar</button>
+        <button class="nav-btn" data-view="analytics" type="button">Analytics</button>
+        <button class="nav-btn" data-view="settings" type="button">Settings</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost" id="logoutBtn" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <section class="content">
+      <header class="topbar panel">
+        <div class="top-left">
+          <p class="greeting" id="greetingText">Good Morning, User</p>
+          <p class="top-sub" id="topSubtitle">Today is a great day to get things done.</p>
+        </div>
+        <div class="top-right">
+          <div class="notification-wrapper">
+            <button class="icon-btn" id="notifBtn" type="button" aria-label="Notifications">
+              <span aria-hidden="true">🔔</span>
+              <strong id="notifCount">0</strong>
+            </button>
+            <div class="notification-panel hidden" id="notificationPanel">
+              <div class="notification-header">
+                <h3>Notifications</h3>
+                <button class="close-notif-btn" id="closeNotifBtn" type="button">✕</button>
+              </div>
+              <div class="notification-list" id="notificationList"></div>
+            </div>
+          </div>
+          <button class="btn btn-ghost" id="themeToggle" type="button">Dark Mode</button>
+        </div>
+      </header>
+
+      <section class="view" id="view-dashboard">
+        <div class="dashboard-grid">
+          <article class="panel metric">
+            <p class="metric-label">Today's Tasks</p>
+            <p class="metric-value" id="todayCount">0</p>
+          </article>
+          <article class="panel metric">
+            <p class="metric-label">Pending</p>
+            <p class="metric-value" id="pendingCount">0</p>
+          </article>
+          <article class="panel metric">
+            <p class="metric-label">Completed</p>
+            <p class="metric-value" id="completedCount">0</p>
+          </article>
+          <article class="panel metric">
+            <p class="metric-label">Streak</p>
+            <p class="metric-value" id="streakCount">0 days</p>
+          </article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Progress</h2>
+            <button class="btn btn-primary" id="quickAddBtn" type="button">+ Quick Add Task</button>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="hint" id="progressText">0% completed</p>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Today's Plan</h2>
+            <p class="hint" id="todayDateLabel"></p>
+          </div>
+          <ul class="list" id="todayPlanList"></ul>
+          <p class="empty" id="todayEmpty">No tasks planned for today.</p>
+        </article>
+
+        <article class="panel">
+          <h2>Smart Suggestions</h2>
+          <ul class="list" id="smartSuggestionList"></ul>
+        </article>
+      </section>
+
+      <section class="view hidden" id="view-tasks">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Task Search & Filter</h2>
+          </div>
+          <div class="filter-grid">
+            <input id="searchInput" type="text" placeholder="Search by keyword" />
+            <select id="priorityFilter">
+              <option value="all">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select id="statusFilter">
+              <option value="all">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            <select id="categoryFilter">
+              <option value="all">All Categories</option>
+              <option value="Study">Study</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Health">Health</option>
+            </select>
+            <select id="deadlineFilter">
+              <option value="all">Any Deadline</option>
+              <option value="today">Due Today</option>
+              <option value="week">This Week</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+        </article>
+
+        <article class="panel">
+          <p class="hint">Mobile hint: Swipe right to mark complete, swipe left to delete.</p>
+          <div id="taskCardList" class="task-card-list"></div>
+          <p class="empty" id="taskListEmpty">No tasks found.</p>
+        </article>
+      </section>
+
+      <section class="view hidden" id="view-add">
+        <article class="panel">
+          <div class="panel-head">
+            <h2 id="formHeading">Add New Task</h2>
+            <button class="btn btn-secondary" id="smartSuggestBtn" type="button">Smart Suggest</button>
+          </div>
+          <form id="taskForm" class="form-grid-wide">
+            <input type="hidden" id="taskId" />
+
+            <label>Task Name
+              <input id="taskTitle" type="text" required maxlength="120" placeholder="e.g. DSA revision" />
+            </label>
+
+            <label>Description
+              <textarea id="taskDescription" rows="3" placeholder="Task details"></textarea>
+            </label>
+
+            <div class="split-2">
+              <label>Due Date
+                <input id="taskDueDate" type="date" required />
+              </label>
+              <label>Priority
+                <select id="taskPriority" required>
+                  <option value="High">High</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="split-2">
+              <label>Status
+                <select id="taskStatus" required>
+                  <option value="Pending" selected>Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </label>
+              <label>Category
+                <select id="taskCategory" required>
+                  <option value="Study">Study</option>
+                  <option value="Work" selected>Work</option>
+                  <option value="Personal">Personal</option>
+                  <option value="Health">Health</option>
+                </select>
+              </label>
+            </div>
+
+            <label>Tags (comma separated)
+              <input id="taskTags" type="text" placeholder="DSA, Assignment, Exam" />
+            </label>
+
+            <label>Notes
+              <textarea id="taskNotes" rows="2" placeholder="Extra notes"></textarea>
+            </label>
+
+            <div class="split-2">
+              <label>Attachment URL
+                <input id="taskLink" type="url" placeholder="https://example.com" />
+              </label>
+              <label>Attach Files/Images
+                <input id="taskFiles" type="file" multiple />
+              </label>
+            </div>
+
+            <article class="panel soft" id="smartBox">
+              <h3>Smart Output</h3>
+              <p class="hint" id="smartTimeSuggestion">Suggested schedule appears here.</p>
+              <p class="hint" id="smartEstimate">Estimated completion time appears here.</p>
+              <ul class="list" id="smartBreakdownList"></ul>
+            </article>
+
+            <div class="form-actions">
+              <button class="btn btn-primary" id="saveTaskBtn" type="submit">Save Task</button>
+              <button class="btn btn-ghost hidden" id="cancelEditBtn" type="button">Cancel Edit</button>
+            </div>
+          </form>
+        </article>
+      </section>
+
+      <section class="view hidden" id="view-calendar">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>Calendar</h2>
+            <div class="calendar-controls">
+              <button class="btn btn-ghost" id="prevMonthBtn" type="button">Prev</button>
+              <p class="hint" id="monthLabel"></p>
+              <button class="btn btn-ghost" id="nextMonthBtn" type="button">Next</button>
+            </div>
+          </div>
+          <div class="calendar-grid" id="monthGrid"></div>
+        </article>
+
+        <article class="panel">
+          <h2>Weekly Drag & Drop</h2>
+          <p class="hint">Drag a task card and drop on another day to reschedule.</p>
+          <div class="week-board" id="weekBoard"></div>
+        </article>
+      </section>
+
+      <section class="view hidden" id="view-analytics">
+        <div class="dashboard-grid">
+          <article class="panel metric">
+            <p class="metric-label">Daily Score</p>
+            <p class="metric-value" id="dailyScore">0%</p>
+          </article>
+          <article class="panel metric">
+            <p class="metric-label">Weekly Score</p>
+            <p class="metric-value" id="weeklyScore">0%</p>
+          </article>
+        </div>
+
+        <article class="panel">
+          <h2>Completed vs Pending</h2>
+          <div class="pie-wrap">
+            <div class="pie" id="pieChart"></div>
+            <p class="hint" id="pieLabel"></p>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Tasks Per Day (Last 7 Days)</h2>
+          <div class="bar-chart" id="barChart"></div>
+        </article>
+      </section>
+
+      <section class="view hidden" id="view-settings">
+        <!-- Profile Section -->
+        <article class="panel profile-panel">
+          <div class="profile-header">
+            <h2>Profile</h2>
+          </div>
+          <div class="profile-container">
+            <!-- Left: Form -->
+            <div class="profile-form-section">
+              <form id="profileForm">
+                <div class="form-group">
+                  <label for="profileName">Name</label>
+                  <input type="text" id="profileName" placeholder="Your full name" />
+                </div>
+                <div class="form-group">
+                  <label for="profileEmail">Email</label>
+                  <input type="email" id="profileEmail" placeholder="Your email" readonly />
+                </div>
+                <div class="form-group">
+                  <label for="profilePassword">Password</label>
+                  <input type="password" id="profilePassword" placeholder="Your password" />
+                </div>
+                <div class="form-group">
+                  <label for="profileAge">Age</label>
+                  <input type="number" id="profileAge" placeholder="Your age" min="1" max="120" />
+                </div>
+                <button type="submit" class="btn btn-primary profile-save-btn">Save Changes</button>
+              </form>
+            </div>
+
+            <!-- Right: Profile Image -->
+            <div class="profile-image-section">
+              <div class="profile-image-container">
+                <img id="profileImageDisplay" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='%23e0e0e0' width='200' height='200'/%3E%3Ccircle cx='100' cy='70' r='35' fill='%23999'/%3E%3Cpath d='M50 180 Q50 140 100 140 Q150 140 150 180' fill='%23999'/%3E%3C/svg%3E" alt="Profile" class="profile-image" />
+                <div class="image-overlay">
+                  <button type="button" class="image-edit-btn" id="profileImageEditBtn" title="Edit Image">✎</button>
+                  <button type="button" class="image-delete-btn" id="profileImageDeleteBtn" title="Delete Image">✕</button>
+                </div>
+              </div>
+              <input type="file" id="profileImageInput" accept="image/*" style="display: none;" />
+            </div>
+          </div>
+          <p class="profile-feedback" id="profileFeedback"></p>
+        </article>
+
+        <!-- Preferences Section -->
+        <article class="panel">
+          <h2>Preferences</h2>
+          <div class="settings-grid">
+            <label class="switch-row">Enable Notifications
+              <input id="notifToggle" type="checkbox" />
+            </label>
+            <label class="switch-row">Theme
+              <select id="themeSelect">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </label>
+            <label class="switch-row">Language
+              <select id="languageSelect">
+                <option value="English">English</option>
+                <option value="Bangla">Bangla</option>
+              </select>
+            </label>
+          </div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
